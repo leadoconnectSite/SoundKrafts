@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { GraduationCap, Music, Trophy, Sparkles } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { GraduationCap, Music, Trophy, Sparkles, ArrowRight, Play } from 'lucide-react';
 
 interface HeroProps {
   scrollToSection: (id: string) => void;
@@ -8,6 +8,8 @@ interface HeroProps {
 const Hero = ({ scrollToSection }: HeroProps) => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [fadeClass, setFadeClass] = useState('fade-in');
+  const [rotatingTextWidth, setRotatingTextWidth] = useState(0);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Array of words to rotate through
   const rotatingWords = [
@@ -23,90 +25,271 @@ const Hero = ({ scrollToSection }: HeroProps) => {
     'Turntable Master'
   ];
 
+  // Function to calculate text width with more precision
+  const calculateTextWidth = (text: string) => {
+    if (!canvasRef.current) {
+      canvasRef.current = document.createElement('canvas');
+    }
+    
+    const canvas = canvasRef.current;
+    const context = canvas.getContext('2d');
+    
+    if (context) {
+      // Use the exact font properties from CSS clamp
+      const fontSize = Math.min(Math.max(window.innerWidth * 0.06, 32), 67.2); // Convert clamp(2rem, 6vw, 4.2rem)
+      context.font = `800 ${fontSize}px system-ui, -apple-system, sans-serif`;
+      const metrics = context.measureText(text);
+      return Math.ceil(metrics.width) + 10; // Add small buffer for safety
+    }
+    
+    return 0;
+  };
+
+  // Pre-calculate all widths for smoother transitions
   useEffect(() => {
-    const FADE_INTERVAL = 1000; // 1 second for fade
-    const WORD_CHANGE_INTERVAL = 2000; // 2 seconds for word change
+    const widths = rotatingWords.map(word => calculateTextWidth(word));
+    const currentWidth = widths[currentWordIndex];
+    setRotatingTextWidth(currentWidth);
+  }, [currentWordIndex, rotatingWords]);
 
-    // Handle fade animation
-    const fadeTimeout = setInterval(() => {
-      setFadeClass(prevFade => prevFade === 'fade-in' ? 'fade-out' : 'fade-in');
-    }, FADE_INTERVAL);
+  useEffect(() => {
+    const FADE_DURATION = 800; // Slightly faster for smoother feel
+    const WORD_CHANGE_INTERVAL = 3000; // Increased for better readability
+    const FADE_OFFSET = 400; // Time before word change when fade starts
 
-    // Handle word change
-    const wordTimeout = setInterval(() => {
-      setCurrentWordIndex(prevIndex => (prevIndex + 1) % rotatingWords.length);
+    const wordChangeTimeout = setInterval(() => {
+      // Start fade out
+      setFadeClass('fade-out');
+      
+      // Change word after fade out completes
+      setTimeout(() => {
+        setCurrentWordIndex(prevIndex => (prevIndex + 1) % rotatingWords.length);
+        // Start fade in immediately after word change
+        setTimeout(() => {
+          setFadeClass('fade-in');
+        }, 50); // Small delay to ensure DOM update
+      }, FADE_DURATION / 2);
+      
     }, WORD_CHANGE_INTERVAL);
 
     return () => {
-      clearInterval(fadeTimeout);
-      clearInterval(wordTimeout);
+      clearInterval(wordChangeTimeout);
     };
   }, [rotatingWords.length]);
 
   return (
     <>
-      {/* Add CSS styles for animations */}
       <style jsx>{`
+        /* Ultra-smooth animations with optimized cubic-bezier curves */
         .fade-in {
           opacity: 1;
-          transform: translateY(0);
-          transition: all 0.5s ease-in-out;
+          transform: translateY(0px) scale(1);
+          transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
         }
+        
         .fade-out {
           opacity: 0;
-          transform: translateY(-10px);
-          transition: all 0.5s ease-in-out;
+          transform: translateY(-12px) scale(0.98);
+          transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
         }
+        
+        /* Ultra-smooth rotating text container */
         .rotating-text {
           display: inline-block;
-          min-width: 350px;
-          min-height: 1.5em;
+          min-height: 1.2em;
           text-align: left;
           vertical-align: top;
+          white-space: nowrap;
+          overflow: visible;
+          /* Ultra-smooth width transition with custom easing */
+          transition: all 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          will-change: width, transform;
+          transform: translateZ(0); /* Hardware acceleration */
         }
-        .gradient-text {
-          background: linear-gradient(135deg, #f97316, #fb923c, #fdba74);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-        .hero-section {
-          position: relative;
-          min-height: 100vh;
+
+        /* Flexible headline container with smooth layout */
+        .headline-container {
           display: flex;
           align-items: center;
           justify-content: center;
-          padding-bottom: 120px;
+          flex-wrap: nowrap;
+          white-space: nowrap;
+          /* Smooth container adjustments */
+          transition: all 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          will-change: transform;
+          transform: translateZ(0);
         }
+
+        /* Enhanced gradient with smoother animation */
+        .gradient-text {
+          background: linear-gradient(135deg, #ff6b35 0%, #f7931e 25%, #ffd23f 50%, #ff8c42 75%, #ff6b35 100%);
+          background-size: 300% 300%;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          animation: gradientFlowSmooth 6s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+          will-change: background-position;
+        }
+
+        @keyframes gradientFlowSmooth {
+          0% { background-position: 0% 50%; }
+          25% { background-position: 100% 50%; }
+          50% { background-position: 200% 50%; }
+          75% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+
+        /* Hero section with optimized performance */
+        .hero-section {
+          position: relative;
+          min-height: 80vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 6rem 0.2rem 2rem;
+          overflow-x: hidden;
+          /* Smooth scrolling performance */
+          will-change: transform;
+          transform: translateZ(0);
+        }
+
+        /* Content Layout */
         .main-content {
           position: relative;
           z-index: 10;
           width: 100%;
-        }
-        .button-container {
-          position: relative;
-          z-index: 15;
-          margin-bottom: 2rem;
-        }
-        .stats-container {
-          position: absolute;
-          bottom: 40px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 100%;
-          max-width: 1024px;
-          z-index: 1;
-        }
-        .title-container {
-          height: 200px;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          margin-bottom: 1rem;
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 0.1rem;
         }
 
-        /* Modern Button Effects */
+        /* Ultra-smooth stats cards */
+        .stats-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 2rem;
+          max-width: 900px;
+          margin: 3rem auto 0;
+        }
+
+        .stat-card {
+          background: rgba(255, 255, 255, 0.05);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 20px;
+          padding: 1.5rem;
+          text-align: center;
+          /* Ultra-smooth hover transitions */
+          transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          position: relative;
+          overflow: hidden;
+          will-change: transform, background-color, border-color, box-shadow;
+          transform: translateZ(0);
+        }
+
+        .stat-card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+          transition: left 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .stat-card:hover {
+          transform: translateY(-6px) translateZ(0);
+          background: rgba(255, 255, 255, 0.08);
+          border-color: rgba(255, 107, 53, 0.4);
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(255, 107, 53, 0.2);
+        }
+
+        .stat-card:hover::before {
+          left: 100%;
+        }
+
+        /* Ultra-smooth icon animations */
+        .icon-container {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 2rem;
+          margin-bottom: 2rem;
+          flex-wrap: wrap;
+        }
+
+        .icon-wrapper {
+          position: relative;
+          width: 60px;
+          height: 60px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(255, 255, 255, 0.05);
+          border: 2px solid rgba(255, 107, 53, 0.2);
+          border-radius: 16px;
+          backdrop-filter: blur(10px);
+          transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          will-change: transform, border-color, box-shadow;
+          transform: translateZ(0);
+        }
+
+        .icon-wrapper:hover {
+          transform: translateY(-4px) rotate(8deg) translateZ(0);
+          border-color: rgba(255, 107, 53, 0.6);
+          box-shadow: 0 12px 24px rgba(255, 107, 53, 0.25);
+        }
+
+        /* Enhanced Typography with smooth scaling */
+        .main-headline {
+          font-size: clamp(2rem, 6vw, 4.2rem);
+          font-weight: 800;
+          line-height: 1.1;
+          letter-spacing: -0.02em;
+          margin-bottom: 0.5rem;
+          color: #ffffff;
+          text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+          /* Smooth text scaling */
+          transition: font-size 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .sub-headline {
+          font-size: clamp(1.4rem, 3.5vw, 2.6rem);
+          font-weight: 700;
+          background: linear-gradient(135deg, #ffffff 0%, #ff6b35 50%, #ffd23f 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          margin-bottom: 1rem;
+          transition: font-size 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .tagline {
+          font-size: 1.3rem;
+          font-weight: 600;
+          color: #ff8c42;
+          margin-bottom: 0.8rem;
+          text-shadow: 0 2px 10px rgba(255, 107, 53, 0.3);
+          transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .description {
+          font-size: 1.1rem;
+          color: #cbd5e1;
+          line-height: 1.6;
+          max-width: 600px;
+          margin: 0 auto 2rem;
+          transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* Content Center */
+        .content-center {
+          text-align: center;
+          margin-bottom: 2rem;
+        }
+
+        /* Ultra-smooth buttons */
         .btn-primary {
           position: relative;
           overflow: hidden;
@@ -118,10 +301,11 @@ const Hero = ({ scrollToSection }: HeroProps) => {
           font-size: 1.125rem;
           padding: 16px 32px;
           cursor: pointer;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          transform: perspective(1000px) rotateX(0deg);
+          transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          transform: perspective(1000px) rotateX(0deg) translateZ(0);
           box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.3),
                       0 10px 10px -5px rgba(249, 115, 22, 0.04);
+          will-change: transform, box-shadow, background;
         }
 
         .btn-primary::before {
@@ -132,13 +316,13 @@ const Hero = ({ scrollToSection }: HeroProps) => {
           width: 100%;
           height: 100%;
           background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-          transition: left 0.5s ease-in-out;
+          transition: left 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         .btn-primary:hover {
-          transform: perspective(1000px) rotateX(-10deg) translateY(-2px);
-          box-shadow: 0 20px 40px -10px rgba(249, 115, 22, 0.4),
-                      0 15px 25px -5px rgba(249, 115, 22, 0.1);
+          transform: perspective(1000px) rotateX(-10deg) translateY(-3px) translateZ(0);
+          box-shadow: 0 25px 50px -10px rgba(249, 115, 22, 0.4),
+                      0 20px 30px -5px rgba(249, 115, 22, 0.1);
           background: linear-gradient(45deg, #ea580c, #f97316);
         }
 
@@ -147,8 +331,8 @@ const Hero = ({ scrollToSection }: HeroProps) => {
         }
 
         .btn-primary:active {
-          transform: perspective(1000px) rotateX(0deg) translateY(0px);
-          transition: transform 0.1s ease;
+          transform: perspective(1000px) rotateX(0deg) translateY(0px) translateZ(0);
+          transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         .btn-secondary {
@@ -162,8 +346,10 @@ const Hero = ({ scrollToSection }: HeroProps) => {
           padding: 14px 30px;
           cursor: pointer;
           overflow: hidden;
-          transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+          transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
           background-clip: padding-box;
+          will-change: transform, color, box-shadow;
+          transform: translateZ(0);
         }
 
         .btn-secondary::before {
@@ -174,10 +360,10 @@ const Hero = ({ scrollToSection }: HeroProps) => {
           right: 0;
           bottom: 0;
           background: linear-gradient(45deg, #f97316, #fb923c, #fdba74, #f97316);
-          background-size: 300% 300%;
+          background-size: 400% 400%;
           border-radius: 12px;
           z-index: -2;
-          animation: gradientShift 3s ease infinite;
+          animation: gradientShiftSmooth 4s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
         }
 
         .btn-secondary::after {
@@ -190,125 +376,159 @@ const Hero = ({ scrollToSection }: HeroProps) => {
           background: #000;
           border-radius: 10px;
           z-index: -1;
-          transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+          transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         .btn-secondary:hover {
           color: white;
-          transform: translateY(-2px);
-          box-shadow: 0 15px 30px -5px rgba(249, 115, 22, 0.3);
+          transform: translateY(-3px) translateZ(0);
+          box-shadow: 0 18px 35px -5px rgba(249, 115, 22, 0.3);
         }
 
         .btn-secondary:hover::after {
           background: transparent;
         }
 
-        @keyframes gradientShift {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
+        @keyframes gradientShiftSmooth {
+          0% { background-position: 0% 50%; }
+          25% { background-position: 100% 50%; }
+          50% { background-position: 200% 50%; }
+          75% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 640px) {
-          .rotating-text {
-            min-width: 280px;
+        /* Responsive Design with smooth scaling */
+        @media (max-width: 768px) {
+          .icon-container {
+            gap: 1.5rem;
           }
-          .stats-container {
-            bottom: 20px;
-            padding: 0 1rem;
+          .icon-wrapper {
+            width: 50px;
+            height: 50px;
           }
-          .title-container {
-            height: 180px;
+          .stats-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-top: 2rem;
           }
           .hero-section {
-            padding-bottom: 100px;
+            min-height: 70vh;
+            padding: 5rem 0.1rem 1.5rem;
           }
+        }
+
+        @media (max-width: 640px) {
           .btn-primary,
           .btn-secondary {
             font-size: 1rem;
             padding: 14px 28px;
+            width: 100%;
+            max-width: 280px;
+          }
+          .hero-section {
+            min-height: 65vh;
+            padding: 4rem 0.05rem 1rem;
           }
         }
-        
-        @media (max-width: 480px) {
-          .hero-section {
-            padding-bottom: 140px;
+
+        /* Prefers-reduced-motion support for accessibility */
+        @media (prefers-reduced-motion: reduce) {
+          * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
           }
-          .button-container {
-            margin-bottom: 3rem;
+          
+          .gradient-text {
+            animation: none;
           }
-          .btn-primary,
-          .btn-secondary {
-            font-size: 0.95rem;
-            padding: 12px 24px;
+          
+          .btn-secondary::before {
+            animation: none;
           }
         }
       `}</style>
 
-      <section id="home" className="hero-section px-4 pt-16">
-        <div className="max-w-6xl mx-auto text-center main-content">
-          <div className="mb-8 flex items-center justify-center space-x-8 text-orange-500">
-            <GraduationCap className="w-12 h-12 animate-pulse" />
-            <Music className="w-12 h-12 animate-pulse" style={{ animationDelay: '0.2s' }} />
-            <Trophy className="w-12 h-12 animate-pulse" style={{ animationDelay: '0.4s' }} />
-            <Sparkles className="w-12 h-12 animate-pulse" style={{ animationDelay: '0.6s' }} />
+      <section id="home" className="hero-section">
+        <div className="main-content">
+          {/* Top Section - Icons */}
+          <div className="icon-container">
+            <div className="icon-wrapper">
+              <GraduationCap className="w-6 h-6 text-orange-400" />
+            </div>
+            <div className="icon-wrapper">
+              <Music className="w-6 h-6 text-orange-400" />
+            </div>
+            <div className="icon-wrapper">
+              <Trophy className="w-6 h-6 text-orange-400" />
+            </div>
+            <div className="icon-wrapper">
+              <Sparkles className="w-6 h-6 text-orange-400" />
+            </div>
           </div>
 
-          {/* Fixed height container for the dynamic headline */}
-          <div className="title-container">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-white leading-tight">
-              How to learn{' '}
-              <span className={`rotating-text gradient-text ${fadeClass}`}>
-                {rotatingWords[currentWordIndex]}
-              </span>
-              <br />
-              <span className="text-3xl sm:text-4xl md:text-5xl bg-gradient-to-r from-white via-orange-200 to-orange-500 bg-clip-text text-transparent mt-4 block">
-                with 600+ Professional Lessons
-              </span>
-            </h1>
-          </div>
+          {/* Center Section - Main Content */}
+          <div className="content-center">
+            {/* Ultra-smooth dynamic headline */}
+            <div className="headline-container">
+              <h1 className="main-headline">
+                Learn to become a{' '}
+                <span 
+                  className={`rotating-text gradient-text ${fadeClass}`}
+                  style={{ 
+                    width: rotatingTextWidth ? `${rotatingTextWidth}px` : 'auto',
+                    minWidth: rotatingTextWidth ? `${rotatingTextWidth}px` : 'auto'
+                  }}
+                >
+                  {rotatingWords[currentWordIndex]}
+                </span>
+              </h1>
+            </div>
 
-          <p className="text-xl sm:text-2xl text-orange-400 mb-4 font-semibold">
-            Unlock Your Inner Musical Genius
-          </p>
+            <div className="sub-headline">
+              with 600+ Professional Lessons
+            </div>
 
-          <p className="text-lg sm:text-xl text-gray-400 mb-8 max-w-3xl mx-auto">
-            Master the art of music creation, mixing, and performance with our comprehensive curriculum trusted by 20,000+ students worldwide
-          </p>
+            <p className="tagline">
+              Unlock Your Musical Potential
+            </p>
 
-          {/* Updated Button container with modern effects */}
-          <div className="button-container">
+            <p className="description">
+              Master the art of music creation, mixing, and performance with our comprehensive curriculum trusted by 20,000+ students worldwide
+            </p>
+
+            {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <button
                 onClick={() => scrollToSection('pricing')}
-                className="btn-primary"
+                className="btn-primary flex items-center gap-2"
               >
                 Start Learning Today
+                <ArrowRight className="w-5 h-5" />
               </button>
               <button
                 onClick={() => scrollToSection('courses')}
-                className="btn-secondary"
+                className="btn-secondary flex items-center gap-2"
               >
+                <Play className="w-5 h-5" />
                 Explore Courses
               </button>
             </div>
           </div>
-        </div>
 
-        {/* Absolutely positioned stats */}
-        <div className="stats-container">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mx-auto">
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold text-orange-500 mb-2">600+</div>
-              <div className="text-gray-400">Professional Lessons</div>
+          {/* Bottom Section - Modern Stats Cards */}
+          <div className="stats-grid">
+            <div className="stat-card">
+              <div className="text-3xl font-bold text-orange-400 mb-2">600+</div>
+              <div className="text-gray-300 font-medium">Professional Lessons</div>
             </div>
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold text-orange-500 mb-2">20K+</div>
-              <div className="text-gray-400">Active Students</div>
+            <div className="stat-card">
+              <div className="text-3xl font-bold text-orange-400 mb-2">20K+</div>
+              <div className="text-gray-300 font-medium">Active Students</div>
             </div>
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold text-orange-500 mb-2">95%</div>
-              <div className="text-gray-400">Success Rate</div>
+            <div className="stat-card">
+              <div className="text-3xl font-bold text-orange-400 mb-2">95%</div>
+              <div className="text-gray-300 font-medium">Success Rate</div>
             </div>
           </div>
         </div>
