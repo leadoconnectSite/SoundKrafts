@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface DJ {
@@ -11,6 +11,8 @@ interface DJ {
 
 const DJInstructors = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
 
   const djs: DJ[] = [
     {
@@ -22,7 +24,7 @@ const DJInstructors = () => {
     },
     {
       id: 2,
-      name: "Afrojack",
+      name: "Afrojack", 
       lessons: 95,
       image: "https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg?auto=compress&cs=tinysrgb&w=800",
       specialty: "EDM & Progressive House"
@@ -45,7 +47,7 @@ const DJInstructors = () => {
       id: 5,
       name: "Martin Garrix",
       lessons: 42,
-      image: "https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&w=800",
+      image: "https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&w=800",  
       specialty: "Big Room House"
     },
     {
@@ -57,111 +59,183 @@ const DJInstructors = () => {
     }
   ];
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % Math.ceil(djs.length / 4));
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) setIsVisible(true);
+    }, { threshold: 0.2, rootMargin: '-50px 0px' });
+
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => { if (sectionRef.current) observer.unobserve(sectionRef.current); };
+  }, []);
+
+  const getCardsPerSlide = () => {
+    if (typeof window !== 'undefined') {
+      if (window.innerWidth < 640) return 1;
+      if (window.innerWidth < 1024) return 2;
+    }
+    return 4;
   };
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + Math.ceil(djs.length / 4)) % Math.ceil(djs.length / 4));
-  };
-
+  const cardsPerSlide = getCardsPerSlide();
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % Math.ceil(djs.length / cardsPerSlide));
+  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + Math.ceil(djs.length / cardsPerSlide)) % Math.ceil(djs.length / cardsPerSlide));
+  
   const getVisibleDJs = () => {
-    const startIndex = currentSlide * 4;
-    return djs.slice(startIndex, startIndex + 4);
+    const startIndex = currentSlide * cardsPerSlide;
+    return djs.slice(startIndex, startIndex + cardsPerSlide);
   };
 
   return (
-    <section className="py-20 px-4">
-      <div className="max-w-7xl mx-auto">
-        {/* Header Section */}
-        <div className="flex justify-between items-start mb-12">
-          <div>
-            <p className="text-orange-500 uppercase tracking-wider text-sm font-semibold mb-3">
-              LEARN FROM THE BEST
-            </p>
-            <h2 className="text-4xl sm:text-5xl font-bold text-white">
-              DJs and their courses
-            </h2>
+    <>
+      <style jsx>{`
+        .dj-section { transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1); }
+        .animate-header { opacity: 0; transform: translateY(-40px); transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 0.2s; }
+        .animate-carousel { opacity: 0; transform: translateY(-30px); transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 0.4s; }
+        .animate-nav { opacity: 0; transform: translateY(20px); transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 1.6s; }
+        .animate-indicators { opacity: 0; transform: translateY(20px); transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 1.8s; }
+        
+        .is-visible .animate-header,
+        .is-visible .animate-carousel,
+        .is-visible .animate-nav,
+        .is-visible .animate-indicators { opacity: 1; transform: translateY(0); }
+        
+        /* Staggered DJ cards */
+        .dj-card { opacity: 0; transform: translateY(40px) scale(0.9); transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1); }
+        .is-visible .dj-card { opacity: 1; transform: translateY(0) scale(1); }
+        .is-visible .dj-card:nth-child(1) { transition-delay: 0.8s; }
+        .is-visible .dj-card:nth-child(2) { transition-delay: 1.0s; }
+        .is-visible .dj-card:nth-child(3) { transition-delay: 1.2s; }
+        .is-visible .dj-card:nth-child(4) { transition-delay: 1.4s; }
+        
+        /* Enhanced card effects */
+        .dj-card-content {
+          position: relative;
+          background: linear-gradient(135deg, #f97316, #fb923c, #dc2626);
+          border-radius: 1.5rem;
+          overflow: hidden;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+          transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+          cursor: pointer;
+        }
+        .dj-card-content:hover {
+          box-shadow: 0 0 40px rgba(249, 115, 22, 0.4);
+          transform: scale(1.05) translateY(-5px);
+        }
+        
+        /* Navigation buttons */
+        .nav-btn {
+          background: rgba(0, 0, 0, 0.5);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(249, 115, 22, 0.3);
+          color: white;
+          border-radius: 50%;
+          width: 48px;
+          height: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.3s ease;
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        .nav-btn:hover:not(:disabled) {
+          background: #f97316;
+          border-color: #f97316;
+          box-shadow: 0 8px 25px rgba(249, 115, 22, 0.25);
+          transform: translateY(-2px);
+        }
+        .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        /* Indicators */
+        .indicator { width: 12px; height: 12px; border-radius: 50%; transition: all 0.3s ease; cursor: pointer; }
+        .indicator.active { background-color: #f97316; transform: scale(1.2); }
+        .indicator:not(.active) { background-color: #6b7280; }
+        .indicator:not(.active):hover { background-color: #9ca3af; transform: scale(1.1); }
+      `}</style>
+
+      <section ref={sectionRef} className={`dj-section py-20 px-4 ${isVisible ? 'is-visible' : ''}`}>
+        <div className="max-w-7xl mx-auto">
+          {/* Header Section */}
+          <div className="animate-header flex justify-between items-start mb-12">
+            <div>
+              <p className="text-orange-500 uppercase tracking-wider text-sm font-semibold mb-3">
+                LEARN FROM THE BEST
+              </p>
+              <h2 className="text-4xl sm:text-5xl font-bold text-white">
+                DJs and their courses
+              </h2>
+            </div>
           </div>
-        </div>
 
-        {/* DJ Cards Carousel */}
-        <div className="relative">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {getVisibleDJs().map((dj) => (
-              <div
-                key={dj.id}
-                className="group cursor-pointer"
-              >
-                {/* DJ Card */}
-                <div className="relative bg-gradient-to-br from-orange-500 via-orange-600 to-red-600 rounded-3xl overflow-hidden shadow-2xl hover:shadow-[0_0_40px_rgba(249,115,22,0.4)] transition-all duration-300 hover:scale-105">
-                  {/* DJ Image */}
-                  <div className="relative h-80 overflow-hidden">
-                    <img
-                      src={dj.image}
-                      alt={dj.name}
-                      className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500"
-                    />
-                    
-                    {/* Gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-                    
-                    {/* DJ Info Overlay */}
-                    <div className="absolute bottom-0 left-0 right-0 p-6">
-                      <h3 className="text-2xl font-bold text-white mb-2 drop-shadow-lg">
-                        {dj.name}
-                      </h3>
-                      <p className="text-orange-200 font-semibold drop-shadow">
-                        {dj.lessons} lessons
-                      </p>
-                      {dj.specialty && (
-                        <p className="text-white/80 text-sm mt-1 drop-shadow">
-                          {dj.specialty}
+          {/* DJ Cards Carousel */}
+          <div className="animate-carousel relative">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {getVisibleDJs().map((dj) => (
+                <div key={dj.id} className="dj-card group">
+                  <div className="dj-card-content">
+                    <div className="relative h-80 overflow-hidden">
+                      <img
+                        src={dj.image}
+                        alt={dj.name}
+                        className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500"
+                      />
+                      
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                      
+                      <div className="absolute bottom-0 left-0 right-0 p-6">
+                        <h3 className="text-2xl font-bold text-white mb-2 drop-shadow-lg">
+                          {dj.name}
+                        </h3>
+                        <p className="text-orange-200 font-semibold drop-shadow">
+                          {dj.lessons} lessons
                         </p>
-                      )}
-                    </div>
+                        {dj.specialty && (
+                          <p className="text-white/80 text-sm mt-1 drop-shadow">
+                            {dj.specialty}
+                          </p>
+                        )}
+                      </div>
 
-                    {/* Decorative elements */}
-                    <div className="absolute top-4 right-4 w-8 h-8 bg-white/20 rounded-full backdrop-blur-sm"></div>
-                    <div className="absolute top-6 right-16 w-4 h-4 bg-orange-300/30 rounded-full"></div>
+                      <div className="absolute top-4 right-4 w-8 h-8 bg-white/20 rounded-full backdrop-blur-sm"></div>
+                      <div className="absolute top-6 right-16 w-4 h-4 bg-orange-300/30 rounded-full"></div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            {/* Navigation Arrows */}
+            <div className="animate-nav">
+              <button
+                onClick={prevSlide}
+                className="nav-btn absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-6"
+                disabled={currentSlide === 0}
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+
+              <button
+                onClick={nextSlide}
+                className="nav-btn absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-6"
+                disabled={currentSlide >= Math.ceil(djs.length / cardsPerSlide) - 1}
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+            </div>
           </div>
 
-          {/* Navigation Arrows */}
-          <button
-            onClick={prevSlide}
-            className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-6 w-12 h-12 bg-black/50 backdrop-blur-sm hover:bg-orange-500 text-white rounded-full flex items-center justify-center transition-all shadow-lg hover:shadow-orange-500/25 border border-orange-500/30"
-            disabled={currentSlide === 0}
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
-
-          <button
-            onClick={nextSlide}
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-6 w-12 h-12 bg-black/50 backdrop-blur-sm hover:bg-orange-500 text-white rounded-full flex items-center justify-center transition-all shadow-lg hover:shadow-orange-500/25 border border-orange-500/30"
-            disabled={currentSlide >= Math.ceil(djs.length / 4) - 1}
-          >
-            <ChevronRight className="w-6 h-6" />
-          </button>
+          {/* Carousel Indicators */}
+          <div className="animate-indicators flex justify-center mt-8 space-x-2">
+            {Array.from({ length: Math.ceil(djs.length / cardsPerSlide) }).map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentSlide(index)}
+                className={`indicator ${currentSlide === index ? 'active' : ''}`}
+              />
+            ))}
+          </div>
         </div>
-
-        {/* Carousel Indicators */}
-        <div className="flex justify-center mt-8 space-x-2">
-          {Array.from({ length: Math.ceil(djs.length / 4) }).map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`w-3 h-3 rounded-full transition-all ${
-                currentSlide === index ? 'bg-orange-500' : 'bg-gray-600 hover:bg-gray-500'
-              }`}
-            />
-          ))}
-        </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 };
 

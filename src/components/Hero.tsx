@@ -9,6 +9,7 @@ const Hero = ({ scrollToSection }: HeroProps) => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [fadeClass, setFadeClass] = useState('fade-in');
   const [rotatingTextWidth, setRotatingTextWidth] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Array of words to rotate through
@@ -24,6 +25,14 @@ const Hero = ({ scrollToSection }: HeroProps) => {
     'Music Creator',
     'Turntable Master'
   ];
+
+  // Trigger entrance animation on component mount
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoaded(true);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Function to calculate text width with more precision
   const calculateTextWidth = (text: string) => {
@@ -80,6 +89,55 @@ const Hero = ({ scrollToSection }: HeroProps) => {
   return (
     <>
       <style jsx>{`
+        /* Page entrance animation - slide down from top */
+        .hero-entrance {
+          opacity: 0;
+          transform: translateY(-50px);
+          transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        
+        .hero-entrance.loaded {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        
+        /* Staggered animation for child elements */
+        .stagger-1 {
+          opacity: 0;
+          transform: translateY(-30px);
+          transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+          transition-delay: 0.2s;
+        }
+        
+        .stagger-2 {
+          opacity: 0;
+          transform: translateY(-30px);
+          transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+          transition-delay: 0.4s;
+        }
+        
+        .stagger-3 {
+          opacity: 0;
+          transform: translateY(-30px);
+          transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+          transition-delay: 0.6s;
+        }
+        
+        .stagger-4 {
+          opacity: 0;
+          transform: translateY(-30px);
+          transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+          transition-delay: 0.8s;
+        }
+        
+        .loaded .stagger-1,
+        .loaded .stagger-2,
+        .loaded .stagger-3,
+        .loaded .stagger-4 {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
         /* Ultra-smooth animations with optimized cubic-bezier curves */
         .fade-in {
           opacity: 1;
@@ -107,7 +165,7 @@ const Hero = ({ scrollToSection }: HeroProps) => {
           transform: translateZ(0); /* Hardware acceleration */
         }
 
-        /* Flexible headline container with smooth layout */
+        /* Mobile-specific headline container with line break */
         .headline-container {
           display: flex;
           align-items: center;
@@ -118,6 +176,28 @@ const Hero = ({ scrollToSection }: HeroProps) => {
           transition: all 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
           will-change: transform;
           transform: translateZ(0);
+        }
+        
+        /* Mobile responsive headline - wrap "Learn to become a" to new line */
+        @media (max-width: 640px) {
+          .headline-container {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 0.25rem;
+          }
+          
+          .headline-prefix {
+            display: block;
+            width: 100%;
+            text-align: center;
+          }
+          
+          .headline-dynamic {
+            display: block;
+            width: 100%;
+            text-align: center;
+          }
         }
 
         /* Enhanced gradient with smoother animation */
@@ -139,14 +219,14 @@ const Hero = ({ scrollToSection }: HeroProps) => {
           100% { background-position: 0% 50%; }
         }
 
-        /* Hero section with optimized performance */
+        /* Hero section with optimized performance and added top margin */
         .hero-section {
           position: relative;
           min-height: 80vh;
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 6rem 0.2rem 2rem;
+          padding: 8rem 0.2rem 2rem; /* Increased top padding for more margin */
           overflow-x: hidden;
           /* Smooth scrolling performance */
           will-change: transform;
@@ -163,13 +243,35 @@ const Hero = ({ scrollToSection }: HeroProps) => {
           padding: 0 0.1rem;
         }
 
-        /* Ultra-smooth stats cards */
+        /* Ultra-smooth stats cards - Desktop layout (unchanged) */
         .stats-grid {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
           gap: 2rem;
           max-width: 900px;
           margin: 3rem auto 0;
+        }
+
+        /* Mobile-first responsive stats cards - MODIFIED FOR SINGLE ROW */
+        @media (max-width: 768px) {
+          .stats-grid {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            padding: 0 1rem;
+            max-width: 100%;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .stats-grid {
+            gap: 0.25rem;
+            margin-top: 1.5rem;
+            padding: 0 0.5rem;
+          }
         }
 
         .stat-card {
@@ -185,6 +287,72 @@ const Hero = ({ scrollToSection }: HeroProps) => {
           overflow: hidden;
           will-change: transform, background-color, border-color, box-shadow;
           transform: translateZ(0);
+        }
+
+        /* Mobile-specific card styling - MODIFIED TO REMOVE BACKGROUND */
+        @media (max-width: 768px) {
+          .stat-card {
+            background: transparent !important;
+            backdrop-filter: none !important;
+            border: none !important;
+            border-radius: 0;
+            padding: 0.75rem 0.5rem;
+            margin: 0;
+            flex: 1;
+            min-width: 0;
+            box-shadow: none !important;
+          }
+
+          .stat-card:hover {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            transform: translateY(0) translateZ(0) !important;
+          }
+
+          .stat-card::before {
+            display: none !important;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .stat-card {
+            padding: 0.5rem 0.25rem;
+          }
+          
+          /* Adjust text sizes for mobile single row */
+          .stat-card .text-3xl {
+            font-size: 1.5rem !important;
+            line-height: 1.2;
+            margin-bottom: 0.25rem !important;
+          }
+          
+          .stat-card .text-gray-300 {
+            font-size: 0.75rem;
+            line-height: 1.2;
+          }
+        }
+
+        /* Compact mobile layout */
+        @media (max-width: 480px) {
+          .stats-grid {
+            gap: 0.125rem;
+            margin-top: 1rem;
+            padding: 0;
+          }
+          
+          .stat-card {
+            padding: 0.375rem 0.125rem;
+          }
+          
+          .stat-card .text-3xl {
+            font-size: 1.25rem !important;
+            margin-bottom: 0.125rem !important;
+          }
+          
+          .stat-card .text-gray-300 {
+            font-size: 0.7rem;
+          }
         }
 
         .stat-card::before {
@@ -406,14 +574,9 @@ const Hero = ({ scrollToSection }: HeroProps) => {
             width: 50px;
             height: 50px;
           }
-          .stats-grid {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-            margin-top: 2rem;
-          }
           .hero-section {
             min-height: 70vh;
-            padding: 5rem 0.1rem 1.5rem;
+            padding: 7rem 0.1rem 1.5rem; /* Adjusted for mobile */
           }
         }
 
@@ -427,7 +590,7 @@ const Hero = ({ scrollToSection }: HeroProps) => {
           }
           .hero-section {
             min-height: 65vh;
-            padding: 4rem 0.05rem 1rem;
+            padding: 6rem 0.05rem 1rem; /* Adjusted for small mobile */
           }
         }
 
@@ -446,13 +609,21 @@ const Hero = ({ scrollToSection }: HeroProps) => {
           .btn-secondary::before {
             animation: none;
           }
+          
+          .hero-entrance,
+          .stagger-1,
+          .stagger-2,
+          .stagger-3,
+          .stagger-4 {
+            transition: none;
+          }
         }
       `}</style>
 
-      <section id="home" className="hero-section">
+      <section id="home" className={`hero-section hero-entrance ${isLoaded ? 'loaded' : ''}`}>
         <div className="main-content">
           {/* Top Section - Icons */}
-          <div className="icon-container">
+          <div className={`icon-container stagger-1`}>
             <div className="icon-wrapper">
               <GraduationCap className="w-6 h-6 text-orange-400" />
             </div>
@@ -468,19 +639,21 @@ const Hero = ({ scrollToSection }: HeroProps) => {
           </div>
 
           {/* Center Section - Main Content */}
-          <div className="content-center">
-            {/* Ultra-smooth dynamic headline */}
+          <div className={`content-center stagger-2`}>
+            {/* Ultra-smooth dynamic headline with mobile responsive wrapping */}
             <div className="headline-container">
               <h1 className="main-headline">
-                Learn to become a{' '}
-                <span 
-                  className={`rotating-text gradient-text ${fadeClass}`}
-                  style={{ 
-                    width: rotatingTextWidth ? `${rotatingTextWidth}px` : 'auto',
-                    minWidth: rotatingTextWidth ? `${rotatingTextWidth}px` : 'auto'
-                  }}
-                >
-                  {rotatingWords[currentWordIndex]}
+                <span className="headline-prefix">Learn to become a</span>
+                <span className="headline-dynamic">
+                  <span 
+                    className={`rotating-text gradient-text ${fadeClass}`}
+                    style={{ 
+                      width: rotatingTextWidth ? `${rotatingTextWidth}px` : 'auto',
+                      minWidth: rotatingTextWidth ? `${rotatingTextWidth}px` : 'auto'
+                    }}
+                  >
+                    {rotatingWords[currentWordIndex]}
+                  </span>
                 </span>
               </h1>
             </div>
@@ -517,14 +690,14 @@ const Hero = ({ scrollToSection }: HeroProps) => {
           </div>
 
           {/* Bottom Section - Modern Stats Cards */}
-          <div className="stats-grid">
-            <div className="stat-card">
-              <div className="text-3xl font-bold text-orange-400 mb-2">600+</div>
-              <div className="text-gray-300 font-medium">Professional Lessons</div>
-            </div>
+          <div className={`stats-grid stagger-4`}>
             <div className="stat-card">
               <div className="text-3xl font-bold text-orange-400 mb-2">20K+</div>
               <div className="text-gray-300 font-medium">Active Students</div>
+            </div>
+            <div className="stat-card">
+              <div className="text-3xl font-bold text-orange-400 mb-2">600+</div>
+              <div className="text-gray-300 font-medium">Professional Lessons</div>
             </div>
             <div className="stat-card">
               <div className="text-3xl font-bold text-orange-400 mb-2">95%</div>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 interface FAQItem {
@@ -8,6 +8,8 @@ interface FAQItem {
 
 const FAQ = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
 
   const faqs: FAQItem[] = [
     {
@@ -32,11 +34,39 @@ const FAQ = () => {
     }
   ];
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) setIsVisible(true);
+    }, { threshold: 0.2, rootMargin: '-50px 0px' });
+
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => { if (sectionRef.current) observer.unobserve(sectionRef.current); };
+  }, []);
+
   return (
     <>
-      {/* SCOPED CSS - Only affects buttons in this FAQ component */}
       <style jsx>{`
-        /* SCOPED 3D EFFECT FOR FAQ "CONTACT SUPPORT" BUTTON */
+        .faq-section { transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1); }
+        .animate-header { opacity: 0; transform: translateY(-40px); transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 0.2s; }
+        .animate-title { opacity: 0; transform: translateY(-30px); transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 0.4s; }
+        .animate-faqs { opacity: 0; transform: translateY(-20px); transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 0.6s; }
+        .animate-cta { opacity: 0; transform: translateY(30px); transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 1.4s; }
+        
+        .is-visible .animate-header,
+        .is-visible .animate-title,
+        .is-visible .animate-faqs,
+        .is-visible .animate-cta { opacity: 1; transform: translateY(0); }
+        
+        /* Staggered FAQ items */
+        .faq-item { opacity: 0; transform: translateY(20px); transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
+        .is-visible .faq-item { opacity: 1; transform: translateY(0); }
+        .is-visible .faq-item:nth-child(1) { transition-delay: 0.8s; }
+        .is-visible .faq-item:nth-child(2) { transition-delay: 0.9s; }
+        .is-visible .faq-item:nth-child(3) { transition-delay: 1.0s; }
+        .is-visible .faq-item:nth-child(4) { transition-delay: 1.1s; }
+        .is-visible .faq-item:nth-child(5) { transition-delay: 1.2s; }
+        
+        /* 3D Button Effect */
         .faq-btn-primary-compact {
           position: relative;
           overflow: hidden;
@@ -49,11 +79,9 @@ const FAQ = () => {
           padding: 16px 32px;
           cursor: pointer;
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          transform: perspective(1000px) rotateX(0deg);
-          box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.3),
-                      0 10px 10px -5px rgba(249, 115, 22, 0.04);
+          transform: perspective(1000px) rotateX(0deg) translateZ(0);
+          box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.3), 0 10px 10px -5px rgba(249, 115, 22, 0.04);
         }
-
         .faq-btn-primary-compact::before {
           content: '';
           position: absolute;
@@ -64,66 +92,56 @@ const FAQ = () => {
           background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
           transition: left 0.5s ease-in-out;
         }
-
         .faq-btn-primary-compact:hover {
-          transform: perspective(1000px) rotateX(-10deg) translateY(-2px);
-          box-shadow: 0 20px 40px -10px rgba(249, 115, 22, 0.4),
-                      0 15px 25px -5px rgba(249, 115, 22, 0.1);
+          transform: perspective(1000px) rotateX(-10deg) translateY(-2px) translateZ(0);
+          box-shadow: 0 20px 40px -10px rgba(249, 115, 22, 0.4), 0 15px 25px -5px rgba(249, 115, 22, 0.1);
           background: linear-gradient(45deg, #ea580c, #f97316);
         }
-
-        .faq-btn-primary-compact:hover::before {
-          left: 100%;
-        }
-
-        .faq-btn-primary-compact:active {
-          transform: perspective(1000px) rotateX(0deg) translateY(0px);
-          transition: transform 0.1s ease;
-        }
-
-        /* Responsive adjustments for FAQ button */
+        .faq-btn-primary-compact:hover::before { left: 100%; }
+        .faq-btn-primary-compact:active { transform: perspective(1000px) rotateX(0deg) translateY(0px) translateZ(0); transition: transform 0.1s ease; }
+        
+        /* Enhanced FAQ interactions */
+        .faq-button { transition: all 0.3s ease; }
+        .faq-button:hover { background: rgba(249, 115, 22, 0.05); border-radius: 0.5rem; margin: 0 -1rem; padding-left: 1rem; padding-right: 1rem; }
+        .faq-question { transition: all 0.3s ease; }
+        .faq-chevron { transition: all 0.3s ease; }
+        .faq-button:hover .faq-chevron { transform: scale(1.1); }
+        
         @media (max-width: 640px) {
-          .faq-btn-primary-compact {
-            font-size: 1rem;
-            padding: 14px 28px;
-          }
+          .faq-btn-primary-compact { font-size: 1rem; padding: 14px 28px; }
         }
-
         @media (max-width: 480px) {
-          .faq-btn-primary-compact {
-            font-size: 0.95rem;
-            padding: 12px 24px;
-          }
+          .faq-btn-primary-compact { font-size: 0.95rem; padding: 12px 24px; }
         }
       `}</style>
 
-      <section id="faq" className="py-20 px-4">
+      <section ref={sectionRef} id="faq" className={`faq-section py-20 px-4 ${isVisible ? 'is-visible' : ''}`}>
         <div className="max-w-4xl mx-auto w-full">
           {/* Header Section */}
           <div className="text-center mb-16">
-            <p className="text-orange-500 uppercase tracking-wider text-sm font-semibold mb-4">
+            <p className="animate-header text-orange-500 uppercase tracking-wider text-sm font-semibold mb-4">
               FAQ
             </p>
-            <h2 className="text-4xl sm:text-5xl font-bold text-white">
+            <h2 className="animate-title text-4xl sm:text-5xl font-bold text-white">
               Frequently asked questions
             </h2>
           </div>
 
           {/* FAQ Items */}
-          <div className="space-y-0">
+          <div className="animate-faqs space-y-0">
             {faqs.map((faq, index) => (
-              <div key={index} className="border-b border-gray-700 last:border-b-0">
+              <div key={index} className="faq-item border-b border-gray-700 last:border-b-0">
                 <button
                   onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                  className="w-full py-8 flex items-center justify-between text-left hover:text-orange-400 transition-colors group"
+                  className="faq-button w-full py-8 flex items-center justify-between text-left group"
                 >
-                  <span className="text-xl font-semibold text-white pr-8 group-hover:text-orange-400 transition-colors">
+                  <span className="faq-question text-xl font-semibold text-white pr-8 group-hover:text-orange-400 transition-colors">
                     {faq.question}
                   </span>
                   {openFaq === index ? (
-                    <ChevronUp className="w-6 h-6 text-orange-500 flex-shrink-0 transition-all" />
+                    <ChevronUp className="faq-chevron w-6 h-6 text-orange-500 flex-shrink-0" />
                   ) : (
-                    <ChevronDown className="w-6 h-6 text-gray-400 flex-shrink-0 transition-all group-hover:text-orange-500" />
+                    <ChevronDown className="faq-chevron w-6 h-6 text-gray-400 flex-shrink-0 group-hover:text-orange-500" />
                   )}
                 </button>
 
@@ -145,12 +163,11 @@ const FAQ = () => {
             ))}
           </div>
 
-          {/* Bottom CTA Section with Updated Button */}
-          <div className="text-center mt-16 pt-8 border-t border-gray-700">
+          {/* Bottom CTA Section */}
+          <div className="animate-cta text-center mt-16 pt-8 border-t border-gray-700">
             <p className="text-gray-400 text-lg mb-6">
               Still have questions? We're here to help.
             </p>
-            {/* Updated button with 3D effect */}
             <button className="faq-btn-primary-compact">
               Contact Support
             </button>
