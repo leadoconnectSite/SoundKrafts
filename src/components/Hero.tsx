@@ -178,6 +178,11 @@ const Hero = ({ scrollToSection }: HeroProps) => {
           transform: translateZ(0);
         }
         
+        /* MODIFIED: Added proper spacing between "become a" and rotating text */
+        .headline-prefix {
+          margin-right: 0.5rem; /* Added space after "become a" */
+        }
+        
         /* Mobile responsive headline - wrap "Learn to become a" to new line */
         @media (max-width: 640px) {
           .headline-container {
@@ -191,6 +196,7 @@ const Hero = ({ scrollToSection }: HeroProps) => {
             display: block;
             width: 100%;
             text-align: center;
+            margin-right: 0; /* Remove margin on mobile when stacked */
           }
           
           .headline-dynamic {
@@ -219,14 +225,14 @@ const Hero = ({ scrollToSection }: HeroProps) => {
           100% { background-position: 0% 50%; }
         }
 
-        /* Hero section with optimized performance and added top margin */
+        /* MODIFIED: Reduced top padding from 8rem to 5rem */
         .hero-section {
           position: relative;
           min-height: 80vh;
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 8rem 0.2rem 2rem; /* Increased top padding for more margin */
+          padding: 5rem 0.2rem 2rem; /* Reduced from 8rem to 5rem */
           overflow-x: hidden;
           /* Smooth scrolling performance */
           will-change: transform;
@@ -565,7 +571,7 @@ const Hero = ({ scrollToSection }: HeroProps) => {
           100% { background-position: 0% 50%; }
         }
 
-        /* Responsive Design with smooth scaling */
+        /* MODIFIED: Adjusted responsive design with reduced padding */
         @media (max-width: 768px) {
           .icon-container {
             gap: 1.5rem;
@@ -576,7 +582,7 @@ const Hero = ({ scrollToSection }: HeroProps) => {
           }
           .hero-section {
             min-height: 70vh;
-            padding: 7rem 0.1rem 1.5rem; /* Adjusted for mobile */
+            padding: 4rem 0.1rem 1.5rem; /* Reduced from 7rem to 4rem */
           }
         }
 
@@ -590,7 +596,7 @@ const Hero = ({ scrollToSection }: HeroProps) => {
           }
           .hero-section {
             min-height: 65vh;
-            padding: 6rem 0.05rem 1rem; /* Adjusted for small mobile */
+            padding: 3rem 0.05rem 1rem; /* Reduced from 6rem to 3rem */
           }
         }
 
@@ -640,7 +646,7 @@ const Hero = ({ scrollToSection }: HeroProps) => {
 
           {/* Center Section - Main Content */}
           <div className={`content-center stagger-2`}>
-            {/* Ultra-smooth dynamic headline with mobile responsive wrapping */}
+            {/* MODIFIED: Updated headline structure with proper spacing */}
             <div className="headline-container">
               <h1 className="main-headline">
                 <span className="headline-prefix">Learn to become a</span>

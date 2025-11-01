@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { Sparkles, Menu, X } from 'lucide-react';
+import { Sparkles, Menu, X, User } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 interface NavbarProps {
   activeSection: string;
@@ -8,6 +10,8 @@ interface NavbarProps {
 
 const Navbar = ({ activeSection, scrollToSection }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth();
 
   const navItems = [
     { id: 'home', label: 'Home' },
@@ -25,7 +29,7 @@ const Navbar = ({ activeSection, scrollToSection }: NavbarProps) => {
   return (
     <>
       {/* Add the 3D button effect styles */}
-      <style jsx>{`
+      <style>{`
         .btn-3d-navbar {
           position: relative;
           overflow: hidden;
@@ -39,6 +43,20 @@ const Navbar = ({ activeSection, scrollToSection }: NavbarProps) => {
           transform: perspective(1000px) rotateX(0deg);
           box-shadow: 0 8px 20px -4px rgba(249, 115, 22, 0.4),
                       0 4px 8px -2px rgba(249, 115, 22, 0.1);
+        }
+        
+        .profile-dropdown {
+          position: absolute;
+          top: 100%;
+          right: 0;
+          margin-top: 0.5rem;
+          width: 200px;
+          background-color: #1f2937;
+          border: 1px solid #374151;
+          border-radius: 0.5rem;
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+          z-index: 50;
+          overflow: hidden;
         }
 
         .btn-3d-navbar::before {
@@ -87,28 +105,61 @@ const Navbar = ({ activeSection, scrollToSection }: NavbarProps) => {
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center gap-8">
               {navItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
-                  className={`capitalize transition-colors ${
-                    activeSection === item.id ? 'text-orange-500' : 'text-gray-300 hover:text-orange-400'
+                  className={`text-sm font-medium transition-colors ${
+                    activeSection === item.id ? 'text-orange-500' : 'text-gray-300 hover:text-white'
                   }`}
                 >
                   {item.label}
                 </button>
               ))}
-              <button className="text-gray-300 hover:text-orange-400 transition-colors">
-                Login
-              </button>
-              {/* Enhanced Get Started button with 3D effect */}
-              <button
-                onClick={() => scrollToSection('pricing')}
-                className="btn-3d-navbar px-6 py-2"
-              >
-                Get Started
-              </button>
+              
+              {isAuthenticated ? (
+                <div className="relative">
+                  <button 
+                    onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                    className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center text-white"
+                  >
+                    {user?.name ? user.name.charAt(0).toUpperCase() : <User size={20} />}
+                  </button>
+                  
+                  {isProfileMenuOpen && (
+                    <div className="profile-dropdown">
+                      <div className="p-4 border-b border-gray-700">
+                        <p className="font-medium">{user?.name}</p>
+                        <p className="text-sm text-gray-400">{user?.email}</p>
+                      </div>
+                      <div className="p-2">
+                        <Link 
+                          to="/profile" 
+                          className="block px-4 py-2 text-sm hover:bg-gray-700 rounded-md"
+                          onClick={() => setIsProfileMenuOpen(false)}
+                        >
+                          My Profile
+                        </Link>
+                        <button 
+                          onClick={() => {
+                            logout();
+                            setIsProfileMenuOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700 rounded-md"
+                        >
+                          Sign Out
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link to="/signin" className="btn-3d-navbar px-5 py-2 flex items-center gap-2">
+                  <Sparkles size={16} />
+                  <span>Get Started</span>
+                </Link>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -123,7 +174,7 @@ const Navbar = ({ activeSection, scrollToSection }: NavbarProps) => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden bg-black/95 backdrop-blur-md border-t border-orange-500/20">
+          <div className="md:hidden bg-black/95 backdrop-blur-md border-t border-orange-500/20 z-50">
             <div className="px-4 py-4 space-y-4">
               {navItems.map((item) => (
                 <button
@@ -134,16 +185,31 @@ const Navbar = ({ activeSection, scrollToSection }: NavbarProps) => {
                   {item.label}
                 </button>
               ))}
-              <button className="block w-full text-left text-gray-300 hover:text-orange-400 transition-colors">
-                Login
-              </button>
-              {/* Enhanced mobile Get Started button */}
-              <button
-                onClick={() => scrollToSection('pricing')}
-                className="btn-3d-navbar w-full px-6 py-2"
-              >
-                Get Started
-              </button>
+              
+              {isAuthenticated ? (
+                <>
+                  <Link 
+                    to="/profile" 
+                    className="block w-full text-left text-gray-300 hover:text-orange-400 transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    My Profile
+                  </Link>
+                  <button 
+                    onClick={() => {
+                      logout();
+                      setIsMenuOpen(false);
+                    }}
+                    className="block w-full text-left text-red-400 hover:text-orange-400 transition-colors"
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <Link to="/signin" className="btn-3d-navbar w-full px-6 py-2 text-center" onClick={() => setIsMenuOpen(false)}>
+                  Get Started
+                </Link>
+              )}
             </div>
           </div>
         )}
