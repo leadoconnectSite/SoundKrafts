@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Users, Zap, Monitor, Video, Calendar, BadgeCheck } from 'lucide-react';
 
-interface Feature {
+interface Feature {  
   id: number;
   title: string;
   description: string;

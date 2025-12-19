@@ -678,10 +678,10 @@ const Hero = ({ scrollToSection }: HeroProps) => {
           <div className={`content-center stagger-2 mt-16 sm:mt-14 md:mt-16 px-4 sm:px-6`}>
             {/* Ultra-smooth dynamic headline */}
             <div className="headline-container" style={{ flexDirection: 'column', gap: '1.5rem', alignItems: 'center' }}>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white px-2 leading-relaxed" style={{ textAlign: 'center', marginBottom: '0.5rem', wordBreak: 'break-word', hyphens: 'auto' }}>
+              <h1 className="text-3xl sm:text-6xl font-bold text-white px-2 leading-relaxed" style={{ textAlign: 'center', marginBottom: '0.5rem', wordBreak: 'break-word', hyphens: 'auto' }}>
                 <span className="headline-prefix">You Always wanted to Learn&nbsp;DJing</span>
               </h1>
-              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold px-2 w-full leading-relaxed" style={{ textAlign: 'center', wordBreak: 'break-word', hyphens: 'auto' }}>
+              <h2 className="text-xl sm:text-4xl font-bold px-2 w-full leading-relaxed" style={{ textAlign: 'center', wordBreak: 'break-word', hyphens: 'auto' }}>
                 <span className="headline-dynamic w-full" style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
                   <span
                     className={`rotating-text gradient-text ${fadeClass}`}
