@@ -15,21 +15,21 @@ const Courses = () => {
 
   const courses: Course[] = [
     {
-      title: 'Beginner DJ Course',
-      description: 'Master the fundamentals of DJing with hands-on lessons covering beat matching, mixing, and transitions.',
-      price: '$49',
+      title: 'Live DJ Demo Session',
+      description: 'Experience a 1-on-1 live demo with our professional DJ trainers from the comfort of your home. Get a clear understanding of our teaching approach, tools, and course structure before enrolling.',
+      price: '₹1,600',
       image: 'https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=800'
     },
     {
-      title: 'Advanced DJ Techniques',
-      description: 'Take your skills to the next level with advanced scratching, effects, and live performance techniques.',
-      price: '$79',
+      title: 'Group DJ Training Program',
+      description: 'Learn DJing through 20 live one-hour sessions conducted in small groups with a 1:5 mentor-to-student ratio. This format ensures personalized attention, real-time feedback, and structured skill development guided by industry professionals.',
+      price: '₹35,000 + GST',
       image: 'https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg?auto=compress&cs=tinysrgb&w=800'
     },
     {
-      title: 'EDM Music Production',
-      description: 'Learn to produce professional EDM tracks using Ableton Live and FL Studio from industry experts.',
-      price: '$99',
+      title: 'Pro DJing – 1-on-1 Course',
+      description: 'A fully personalized 1-on-1 online DJing program consisting of 30 live one-hour sessions. Designed for students seeking focused mentorship, flexible learning pace, and continuous real-time guidance from professional DJs.',
+      price: '₹70,000 + GST',
       image: 'https://images.pexels.com/photos/1481309/pexels-photo-1481309.jpeg?auto=compress&cs=tinysrgb&w=800'
     }
   ];
@@ -54,7 +54,7 @@ const Courses = () => {
   const cardsPerSlide = getCardsPerSlide();
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % Math.ceil(courses.length / cardsPerSlide));
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + Math.ceil(courses.length / cardsPerSlide)) % Math.ceil(courses.length / cardsPerSlide));
-  
+
   const getVisibleCourses = () => {
     const startIndex = currentSlide * cardsPerSlide;
     return courses.slice(startIndex, startIndex + cardsPerSlide);
@@ -62,7 +62,7 @@ const Courses = () => {
 
   return (
     <>
-      <style jsx>{`
+      <style>{`
         .courses-section { transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1); }
         .animate-title { opacity: 0; transform: translateY(-50px); transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 0.2s; }
         .animate-subtitle { opacity: 0; transform: translateY(-30px); transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 0.4s; }
@@ -177,15 +177,15 @@ const Courses = () => {
 
       <section ref={sectionRef} id="courses" className={`courses-section min-h-screen py-20 px-4 ${isVisible ? 'is-visible' : ''}`}>
         <div className="max-w-7xl mx-auto">
-          <h2 className="animate-title text-4xl sm:text-5xl font-bold text-center mb-4 bg-gradient-to-r from-white to-orange-400 bg-clip-text text-transparent">
+          <h2 className="animate-title text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-4 bg-gradient-to-r from-white to-orange-400 bg-clip-text text-transparent px-4">
             Our Courses
           </h2>
-          <p className="animate-subtitle text-center text-gray-400 mb-16 text-lg">
+          <p className="animate-subtitle text-center text-gray-400 mb-12 sm:mb-16 text-base sm:text-lg px-4">
             Choose the perfect course to start your DJ journey
           </p>
 
-          <div className="animate-cards-container relative">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 items-stretch">
+          <div className="animate-cards-container relative px-4 sm:px-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch">
               {getVisibleCourses().map((course, index) => (
                 <div key={index} className="course-card">
                   <div className="course-card-content group">
@@ -193,11 +193,11 @@ const Courses = () => {
                       <img src={course.image} alt={course.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                     </div>
                     <div className="course-content">
-                      <h3 className="course-title">{course.title}</h3>
-                      <p className="course-description">{course.description}</p>
+                      <h3 className="course-title text-xl sm:text-2xl">{course.title}</h3>
+                      <p className="course-description text-sm sm:text-base">{course.description}</p>
                       <div className="course-footer">
-                        <span className="course-price">{course.price}</span>
-                        <button className="enroll-button">Enroll Now</button>
+                        <span className="course-price text-2xl sm:text-3xl">{course.price}</span>
+                        <button className="enroll-button text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-3">Enroll Now</button>
                       </div>
                     </div>
                   </div>

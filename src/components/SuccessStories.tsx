@@ -57,7 +57,7 @@ const SuccessStories = () => {
 
   return (
     <>
-      <style jsx>{`
+      <style>{`
         .stories-section { transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1); }
         .animate-container { opacity: 0; transform: translateY(-40px); transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 0.2s; }
         .animate-content { opacity: 0; transform: translateX(-50px); transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 0.4s; }
@@ -152,7 +152,7 @@ const SuccessStories = () => {
             <div className="absolute top-0 left-0 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl"></div>
             <div className="absolute bottom-0 right-0 w-96 h-96 bg-orange-600/10 rounded-full blur-3xl"></div>
             <div className="absolute top-1/2 left-1/3 w-32 h-32 bg-orange-400/5 rounded-full blur-2xl"></div>
-            
+
             <div className="relative z-10">
               <div className="grid lg:grid-cols-2 gap-16 items-center">
                 {/* Left side - Enhanced Content */}
@@ -174,7 +174,7 @@ const SuccessStories = () => {
                   {/* Description */}
                   <div className="animate-description space-y-4">
                     <p className="text-xl text-gray-300 leading-relaxed font-light">
-                      From bedroom DJ to the biggest stages. Discover how students turned their 
+                      From bedroom DJ to the biggest stages. Discover how students turned their
                       <span className="text-orange-400 font-semibold"> passion into success</span>.
                     </p>
                     <p className="text-lg text-gray-400 leading-relaxed">Your story could be next.</p>
@@ -186,7 +186,7 @@ const SuccessStories = () => {
                       <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
                       <p className="text-white font-semibold text-lg">Join the Academy now!</p>
                     </div>
-                    
+
                     <button className="btn-primary-compact">
                       <span className="flex items-center">
                         START NOW
@@ -219,9 +219,9 @@ const SuccessStories = () => {
                       alt={currentStoryData.djName}
                       className="w-full h-[500px] object-cover object-center transition-all duration-700"
                     />
-                    
+
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                    
+
                     {/* Story Card Overlay */}
                     <div className="animate-story-card absolute bottom-6 left-6 right-6">
                       <div className="bg-black/90 backdrop-blur-md rounded-2xl p-6 border border-orange-500/30 shadow-2xl">

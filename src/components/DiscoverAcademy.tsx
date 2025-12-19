@@ -15,32 +15,32 @@ const DiscoverAcademy = () => {
   const features: AcademyFeature[] = [
     {
       id: 1,
-      title: "More than 600+ lessons",
-      description: "Access over 600+ lessons by Tomorrowland artists and industry experts. Step by step courses for beginner and advanced level DJs & producers.",
+      title: "30+ Professional Lessons",
+      description: "Learn DJing from scratch through 30+ structured lessons covering mixing, beatmatching, transitions, effects, and live performance, designed to help you progress confidently from beginner to performer.",
       imageUrl: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
     },
     {
       id: 2,
-      title: "Talent radar, DJ & producing contests",
-      description: "Grab countless opportunities to get discovered. Join remix competitions, DJ contests and earn your spot on the talent radar.",
+      title: "1-on-1 Private Coaching",
+      description: "Get personalized mentorship from experienced industry professionals, tailored to your learning pace, music style, and goals, with real-time feedback for faster improvement.",
       imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
     },
     {
       id: 3,
-      title: "Join Q&A and feedback livestreams",
-      description: "Interact directly with professional DJs and producers in live Q&A sessions. Get personalized feedback on your tracks and mixes.",
+      title: "10,000+ Hot Cue Files",
+      description: "Access 10,000+ professionally prepared hot cue files that help you practice efficiently, improve transitions, and perform live sets with greater accuracy and confidence.",
       imageUrl: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
     },
     {
       id: 4,
-      title: "Download the best templates & project files",
-      description: "Access exclusive project files, templates, and resources from top producers to accelerate your learning journey.",
+      title: "Online Learning",
+      description: "Learn from anywhere through flexible online sessions, whether you use a DJ console or not, with training adapted to your setup and skill level.",
       imageUrl: "https://images.unsplash.com/photo-1571266028243-d220c9ae3b15?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
     },
     {
       id: 5,
-      title: "Free DJ music & samples included!",
-      description: "Get access to a vast library of royalty-free music, samples, loops, and sound effects to enhance your productions.",
+      title: "Trusted by 2,000+ Students Worldwide",
+      description: "Join a global community of 2,000+ students who trust our proven curriculum, delivering real-world DJ skills, confidence, and career growth.",
       imageUrl: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
     }
   ];
@@ -56,7 +56,7 @@ const DiscoverAcademy = () => {
 
   return (
     <>
-      <style jsx>{`
+      <style>{`
         .academy-section { transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1); }
         .animate-image { opacity: 0; transform: translateX(-50px); transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 0.2s; }
         .animate-title { opacity: 0; transform: translateX(50px); transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 0.4s; }
@@ -125,7 +125,7 @@ const DiscoverAcademy = () => {
                     <div className="bg-gradient-to-b from-orange-600 to-red-600"></div>
                   </div>
                 </div>
-                
+
                 <div className="relative z-10">
                   <div className="bg-black/80 backdrop-blur-sm rounded-2xl p-6 shadow-2xl border-4 border-gray-800/50">
                     <div className="flex items-center justify-between mb-4 pb-2 border-b border-gray-700">
@@ -136,9 +136,9 @@ const DiscoverAcademy = () => {
                       </div>
                       <div className="text-gray-400 text-xs">SoundKraft Academy</div>
                     </div>
-                    
+
                     <div className="relative overflow-hidden rounded-xl mb-4 group">
-                      <img 
+                      <img
                         src={features.find(f => f.id === activeFeature)?.imageUrl}
                         alt={features.find(f => f.id === activeFeature)?.title}
                         className="w-full h-64 object-cover feature-image transition-transform duration-700"
@@ -162,24 +162,23 @@ const DiscoverAcademy = () => {
                           Feature {activeFeature} of {features.length} • SoundKraft
                         </p>
                       </div>
-                      
+
                       <div className="absolute top-4 right-4 w-8 h-8 bg-orange-500/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <div className="w-0 h-0 border-l-[6px] border-l-white border-y-[4px] border-y-transparent ml-0.5"></div>
                       </div>
                     </div>
-                    
+
                     <div className="grid grid-cols-5 gap-2">
                       {features.map((feature) => (
                         <button
                           key={feature.id}
                           onClick={() => setActiveFeature(feature.id)}
-                          className={`relative overflow-hidden rounded-lg transition-all duration-300 ${
-                            activeFeature === feature.id 
-                              ? 'ring-2 ring-orange-500 ring-offset-2 ring-offset-black transform scale-105' 
-                              : 'opacity-60 hover:opacity-100 hover:scale-105'
-                          }`}
+                          className={`relative overflow-hidden rounded-lg transition-all duration-300 ${activeFeature === feature.id
+                            ? 'ring-2 ring-orange-500 ring-offset-2 ring-offset-black transform scale-105'
+                            : 'opacity-60 hover:opacity-100 hover:scale-105'
+                            }`}
                         >
-                          <img 
+                          <img
                             src={feature.imageUrl}
                             alt={feature.title}
                             className="w-full h-12 object-cover thumbnail-image"
@@ -196,7 +195,7 @@ const DiscoverAcademy = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="absolute -top-4 -right-4 w-8 h-8 bg-orange-500 rounded-full animate-pulse"></div>
               <div className="absolute -bottom-6 -left-6 w-12 h-12 bg-red-500/20 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
             </div>
@@ -204,35 +203,31 @@ const DiscoverAcademy = () => {
             {/* Right side - Interactive Content List */}
             <div>
               <h2 className="animate-title text-4xl sm:text-5xl font-bold text-white mb-12">
-                Discover the SoundKraft Academy
+                Discover the SoundKraft DJ Academy
               </h2>
 
               <div className="animate-features space-y-8">
                 {features.map((feature) => (
                   <div key={feature.id} className="flex group">
-                    <div className={`w-1 mr-6 flex-shrink-0 transition-all duration-500 ease-in-out ${
-                      activeFeature === feature.id ? 'bg-orange-500 h-16' : 'bg-gray-600 h-8 group-hover:h-12 group-hover:bg-orange-400'
-                    }`}></div>
-                    
+                    <div className={`w-1 mr-6 flex-shrink-0 transition-all duration-500 ease-in-out ${activeFeature === feature.id ? 'bg-orange-500 h-16' : 'bg-gray-600 h-8 group-hover:h-12 group-hover:bg-orange-400'
+                      }`}></div>
+
                     <div className="flex-1">
                       <button
                         onClick={() => setActiveFeature(feature.id)}
-                        className={`text-xl font-bold mb-3 text-left w-full transition-all duration-500 ease-in-out hover:text-orange-400 flex items-center gap-3 ${
-                          activeFeature === feature.id ? 'text-white' : 'text-gray-400'
-                        }`}
+                        className={`text-xl font-bold mb-3 text-left w-full transition-all duration-500 ease-in-out hover:text-orange-400 flex items-center gap-3 ${activeFeature === feature.id ? 'text-white' : 'text-gray-400'
+                          }`}
                       >
                         <span>{feature.title}</span>
                         {activeFeature === feature.id && (
                           <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
                         )}
                       </button>
-                      
-                      <div className={`overflow-hidden transition-all duration-700 ease-in-out ${
-                        activeFeature === feature.id ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
-                      }`}>
-                        <div className={`transform transition-all duration-700 ease-in-out ${
-                          activeFeature === feature.id ? 'translate-y-0' : '-translate-y-4'
+
+                      <div className={`overflow-hidden transition-all duration-700 ease-in-out ${activeFeature === feature.id ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
                         }`}>
+                        <div className={`transform transition-all duration-700 ease-in-out ${activeFeature === feature.id ? 'translate-y-0' : '-translate-y-4'
+                          }`}>
                           <p className="text-gray-300 leading-relaxed pt-3">{feature.description}</p>
                         </div>
                       </div>

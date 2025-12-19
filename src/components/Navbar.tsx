@@ -13,7 +13,7 @@ const Navbar = ({ activeSection, scrollToSection }: NavbarProps) => {
     { id: 'home', label: 'Home' },
     { id: 'courses', label: 'Courses' },
     { id: 'pricing', label: 'Pricing' },
-    { id: 'bootcamp', label: 'Bootcamp' },
+    { id: 'bootcamp', label: 'Guarantee' },
     { id: 'faq', label: 'FAQ' }
   ];
 
@@ -25,7 +25,7 @@ const Navbar = ({ activeSection, scrollToSection }: NavbarProps) => {
   return (
     <>
       {/* Add the 3D button effect styles */}
-      <style jsx>{`
+      <style>{`
         .btn-3d-navbar {
           position: relative;
           overflow: hidden;
@@ -82,7 +82,7 @@ const Navbar = ({ activeSection, scrollToSection }: NavbarProps) => {
             <div className="flex items-center space-x-2">
               <Sparkles className="w-8 h-8 text-orange-500" />
               <span className="text-xl font-bold bg-gradient-to-r from-orange-500 to-orange-300 bg-clip-text text-transparent">
-                SoundKraft Academy
+                SoundKraft DJ Academy
               </span>
             </div>
 
@@ -92,9 +92,8 @@ const Navbar = ({ activeSection, scrollToSection }: NavbarProps) => {
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
-                  className={`capitalize transition-colors ${
-                    activeSection === item.id ? 'text-orange-500' : 'text-gray-300 hover:text-orange-400'
-                  }`}
+                  className={`capitalize transition-colors ${activeSection === item.id ? 'text-orange-500' : 'text-gray-300 hover:text-orange-400'
+                    }`}
                 >
                   {item.label}
                 </button>

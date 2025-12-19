@@ -12,18 +12,14 @@ const Hero = ({ scrollToSection }: HeroProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  // Array of words to rotate through
+  // Array of phrases to rotate through
   const rotatingWords = [
-    'DJ',
-    'Music Producer',
-    'Beat Mixer',
-    'Sound Artist',
-    'Party Starter',
-    'Crowd Controller',
-    'Audio Engineer',
-    'Festival Performer',
-    'Music Creator',
-    'Turntable Master'
+    '& Become a Pro DJ in just 30 hours',
+    '& Become Club-Ready in 30 hours',
+    '& Master DJing with a 30-hour intensive program',
+    'Now Learn DJing, Mixing & Performance in 30 hours',
+    '& Fast-track your DJ journey go live in 30 hours',
+    '& Step into the DJ booth in just 30 hours'
   ];
 
   // Trigger entrance animation on component mount
@@ -39,10 +35,10 @@ const Hero = ({ scrollToSection }: HeroProps) => {
     if (!canvasRef.current) {
       canvasRef.current = document.createElement('canvas');
     }
-    
+
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
-    
+
     if (context) {
       // Use the exact font properties from CSS clamp
       const fontSize = Math.min(Math.max(window.innerWidth * 0.06, 32), 67.2); // Convert clamp(2rem, 6vw, 4.2rem)
@@ -50,7 +46,7 @@ const Hero = ({ scrollToSection }: HeroProps) => {
       const metrics = context.measureText(text);
       return Math.ceil(metrics.width) + 10; // Add small buffer for safety
     }
-    
+
     return 0;
   };
 
@@ -64,12 +60,11 @@ const Hero = ({ scrollToSection }: HeroProps) => {
   useEffect(() => {
     const FADE_DURATION = 800; // Slightly faster for smoother feel
     const WORD_CHANGE_INTERVAL = 3000; // Increased for better readability
-    const FADE_OFFSET = 400; // Time before word change when fade starts
 
     const wordChangeTimeout = setInterval(() => {
       // Start fade out
       setFadeClass('fade-out');
-      
+
       // Change word after fade out completes
       setTimeout(() => {
         setCurrentWordIndex(prevIndex => (prevIndex + 1) % rotatingWords.length);
@@ -78,7 +73,7 @@ const Hero = ({ scrollToSection }: HeroProps) => {
           setFadeClass('fade-in');
         }, 50); // Small delay to ensure DOM update
       }, FADE_DURATION / 2);
-      
+
     }, WORD_CHANGE_INTERVAL);
 
     return () => {
@@ -88,7 +83,7 @@ const Hero = ({ scrollToSection }: HeroProps) => {
 
   return (
     <>
-      <style jsx>{`
+      <style>{`
         /* Page entrance animation - slide down from top */
         .hero-entrance {
           opacity: 0;
@@ -155,14 +150,22 @@ const Hero = ({ scrollToSection }: HeroProps) => {
         .rotating-text {
           display: inline-block;
           min-height: 1.2em;
-          text-align: left;
+          text-align: center;
           vertical-align: top;
-          white-space: nowrap;
+          white-space: normal;
           overflow: visible;
+          line-height: 1.2;
           /* Ultra-smooth width transition with custom easing */
           transition: all 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
           will-change: width, transform;
           transform: translateZ(0); /* Hardware acceleration */
+        }
+        
+        /* Desktop: prevent wrapping */
+        @media (min-width: 640px) {
+          .rotating-text {
+            white-space: nowrap;
+          }
         }
 
         /* Mobile-specific headline container with line break */
@@ -170,8 +173,7 @@ const Hero = ({ scrollToSection }: HeroProps) => {
           display: flex;
           align-items: center;
           justify-content: center;
-          flex-wrap: nowrap;
-          white-space: nowrap;
+          flex-wrap: wrap;
           /* Smooth container adjustments */
           transition: all 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
           will-change: transform;
@@ -243,12 +245,12 @@ const Hero = ({ scrollToSection }: HeroProps) => {
           padding: 0 0.1rem;
         }
 
-        /* Ultra-smooth stats cards - Desktop layout (unchanged) */
+        /* Ultra-smooth stats cards - Desktop layout (4 cards in one row) */
         .stats-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-          gap: 2rem;
-          max-width: 900px;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 1.5rem;
+          max-width: 1200px;
           margin: 3rem auto 0;
         }
 
@@ -270,26 +272,52 @@ const Hero = ({ scrollToSection }: HeroProps) => {
           .stats-grid {
             gap: 0.25rem;
             margin-top: 1.5rem;
-            padding: 0 0.5rem;
+          padding: 0 0.5rem;
           }
         }
 
         .stat-card {
-          background: rgba(255, 255, 255, 0.05);
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 20px;
-          padding: 1.5rem;
-          text-align: center;
-          /* Ultra-smooth hover transitions */
-          transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
           position: relative;
+          background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(0, 0, 0, 0.3));
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(249, 115, 22, 0.3);
+          border-radius: 24px;
+          padding: 2rem 1.5rem;
+          text-align: center;
           overflow: hidden;
-          will-change: transform, background-color, border-color, box-shadow;
-          transform: translateZ(0);
+          /* Ultra-smooth hover transitions */
+          transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 
+                      0 0 0 1px rgba(249, 115, 22, 0.1) inset;
         }
-
-        /* Mobile-specific card styling - MODIFIED TO REMOVE BACKGROUND */
+        
+        /* Glowing effect behind stat cards */
+        .stat-glow {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 80%;
+          height: 80%;
+          background: radial-gradient(circle, rgba(249, 115, 22, 0.3), transparent 70%);
+          filter: blur(20px);
+          opacity: 0;
+          transition: opacity 0.5s ease;
+          pointer-events: none;
+          z-index: 0;
+        }
+        
+        .stat-card:hover .stat-glow {
+          opacity: 1;
+        }
+        
+        .stat-card:hover {
+          transform: translateY(-8px) scale(1.02);
+          border-color: rgba(249, 115, 22, 0.6);
+          box-shadow: 0 20px 60px rgba(249, 115, 22, 0.4),
+                      0 0 0 1px rgba(249, 115, 22, 0.3) inset,
+                      0 0 40px rgba(249, 115, 22, 0.2);
+        }/* Mobile-specific card styling - MODIFIED TO REMOVE BACKGROUND */
         @media (max-width: 768px) {
           .stat-card {
             background: transparent !important;
@@ -621,87 +649,107 @@ const Hero = ({ scrollToSection }: HeroProps) => {
       `}</style>
 
       <section id="home" className={`hero-section hero-entrance ${isLoaded ? 'loaded' : ''}`}>
+        {/* Enhanced Background Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {/* Radial gradients for depth */}
+          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-[800px] h-[800px] bg-gradient-radial from-orange-500/20 via-orange-600/10 to-transparent blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-radial from-red-500/15 to-transparent blur-3xl"></div>
+          <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-gradient-radial from-orange-400/15 to-transparent blur-3xl"></div>
+        </div>
+
         <div className="main-content">
-          {/* Top Section - Icons */}
-          <div className={`icon-container stagger-1`}>
+          {/* Floating Icons - Repositioned */}
+          <div className={`absolute top-0 left-0 right-0 flex justify-center gap-8 sm:gap-12 md:gap-16 opacity-30 stagger-1`}>
             <div className="icon-wrapper">
-              <GraduationCap className="w-6 h-6 text-orange-400" />
+              <GraduationCap className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-orange-400" />
             </div>
             <div className="icon-wrapper">
-              <Music className="w-6 h-6 text-orange-400" />
+              <Music className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-orange-400" />
             </div>
             <div className="icon-wrapper">
-              <Trophy className="w-6 h-6 text-orange-400" />
+              <Trophy className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-orange-400" />
             </div>
             <div className="icon-wrapper">
-              <Sparkles className="w-6 h-6 text-orange-400" />
+              <Sparkles className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-orange-400" />
             </div>
           </div>
 
-          {/* Center Section - Main Content */}
-          <div className={`content-center stagger-2`}>
-            {/* Ultra-smooth dynamic headline with mobile responsive wrapping */}
-            <div className="headline-container">
-              <h1 className="main-headline">
-                <span className="headline-prefix">Learn to become a</span>
-                <span className="headline-dynamic">
-                  <span 
+          {/* Main Content - No Container */}
+          <div className={`content-center stagger-2 mt-16 sm:mt-14 md:mt-16 px-4 sm:px-6`}>
+            {/* Ultra-smooth dynamic headline */}
+            <div className="headline-container" style={{ flexDirection: 'column', gap: '1.5rem', alignItems: 'center' }}>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white px-2 leading-relaxed" style={{ textAlign: 'center', marginBottom: '0.5rem', wordBreak: 'break-word', hyphens: 'auto' }}>
+                <span className="headline-prefix">You Always wanted to Learn&nbsp;DJing</span>
+              </h1>
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold px-2 w-full leading-relaxed" style={{ textAlign: 'center', wordBreak: 'break-word', hyphens: 'auto' }}>
+                <span className="headline-dynamic w-full" style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
+                  <span
                     className={`rotating-text gradient-text ${fadeClass}`}
-                    style={{ 
-                      width: rotatingTextWidth ? `${rotatingTextWidth}px` : 'auto',
-                      minWidth: rotatingTextWidth ? `${rotatingTextWidth}px` : 'auto'
+                    style={{
+                      width: window.innerWidth > 640 && rotatingTextWidth ? `${rotatingTextWidth}px` : 'auto',
+                      minWidth: window.innerWidth > 640 && rotatingTextWidth ? `${rotatingTextWidth}px` : 'auto',
+                      textAlign: 'center',
+                      maxWidth: '100%'
                     }}
                   >
                     {rotatingWords[currentWordIndex]}
                   </span>
                 </span>
-              </h1>
+              </h2>
             </div>
 
-            <div className="sub-headline">
-              with 600+ Professional Lessons
+            <div className="text-sm sm:text-base md:text-lg lg:text-xl text-orange-400 font-semibold px-2 mt-6 sm:mt-4" style={{ textAlign: 'center' }}>
+              with 30+ Professional Lessons
             </div>
 
-            <p className="tagline">
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-white px-2 mt-8 sm:mt-6 leading-relaxed" style={{ textAlign: 'center' }}>
               Unlock Your Musical Potential
             </p>
 
-            <p className="description">
-              Master the art of music creation, mixing, and performance with our comprehensive curriculum trusted by 20,000+ students worldwide
+            <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-300 px-6 sm:px-4 mt-6 sm:mt-4 leading-relaxed" style={{ maxWidth: '700px', margin: '1.5rem auto 0', textAlign: 'center' }}>
+              Learn the art and science of DJing, music creation, mixing, and performance with a structured curriculum trusted by 2,000+ students worldwide just in 30 Hours.
             </p>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-4 justify-center items-center w-full sm:w-auto px-4 sm:px-0 mt-10 sm:mt-8">
               <button
                 onClick={() => scrollToSection('pricing')}
-                className="btn-primary flex items-center gap-2"
+                className="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto text-sm sm:text-base px-6 sm:px-8 py-3 sm:py-4"
               >
                 Start Learning Today
-                <ArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
               <button
                 onClick={() => scrollToSection('courses')}
-                className="btn-secondary flex items-center gap-2"
+                className="btn-secondary flex items-center justify-center gap-2 w-full sm:w-auto text-sm sm:text-base px-6 sm:px-8 py-3 sm:py-4"
               >
-                <Play className="w-5 h-5" />
+                <Play className="w-4 h-4 sm:w-5 sm:h-5" />
                 Explore Courses
               </button>
             </div>
           </div>
 
-          {/* Bottom Section - Modern Stats Cards */}
-          <div className={`stats-grid stagger-4`}>
+          {/* Enhanced Stats Cards */}
+          <div className={`stats-grid stagger-4 px-4 sm:px-6`} style={{ marginTop: '3rem sm:4rem md:5rem' }}>
             <div className="stat-card">
-              <div className="text-3xl font-bold text-orange-400 mb-2">20K+</div>
-              <div className="text-gray-300 font-medium">Active Students</div>
+              <div className="stat-glow"></div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-orange-400 mb-2 relative z-10">20K+</div>
+              <div className="text-xs sm:text-sm md:text-base text-gray-300 font-medium relative z-10">Active Students</div>
             </div>
             <div className="stat-card">
-              <div className="text-3xl font-bold text-orange-400 mb-2">600+</div>
-              <div className="text-gray-300 font-medium">Professional Lessons</div>
+              <div className="stat-glow"></div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-orange-400 mb-2 relative z-10">2K+</div>
+              <div className="text-xs sm:text-sm md:text-base text-gray-300 font-medium relative z-10">Students Trained</div>
             </div>
             <div className="stat-card">
-              <div className="text-3xl font-bold text-orange-400 mb-2">95%</div>
-              <div className="text-gray-300 font-medium">Success Rate</div>
+              <div className="stat-glow"></div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-orange-400 mb-2 relative z-10">600+</div>
+              <div className="text-xs sm:text-sm md:text-base text-gray-300 font-medium relative z-10">Professional Lessons</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-glow"></div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-orange-400 mb-2 relative z-10">95%</div>
+              <div className="text-xs sm:text-sm md:text-base text-gray-300 font-medium relative z-10">Success Rate</div>
             </div>
           </div>
         </div>

@@ -13,24 +13,44 @@ const FAQ = () => {
 
   const faqs: FAQItem[] = [
     {
-      question: 'I have not received my verification e-mail.',
-      answer: 'When signing up, you need to verify your e-mail. Please note it can take a while until you receive this e-mail. Also, please check your spam or junk folder. You can request a new confirmation e-mail via the Log in page.'
+      question: 'Are the classes live or recorded?',
+      answer: 'All sessions are 100% live and interactive. You\'ll learn 1-on-1 from an expert trainer in real time no boring pre-recorded videos!'
     },
     {
-      question: 'I want to change my contact details or password.',
-      answer: 'While logged in, you can update your contact details via \'My account\'.'
+      question: 'Can I learn without a DJ console?',
+      answer: 'Absolutely! We teach using beginner-friendly DJ software. You can start with just your laptop Console is optional.'
     },
     {
-      question: 'Do I need any DJ gear or software?',
-      answer: 'No! You can start learning with just a laptop. We provide software tutorials and recommend beginner-friendly equipment as you progress. All the software we use in our courses is either free or comes with free trials.'
+      question: 'What devices can I use to join the class?',
+      answer: 'You can learn from anywhere using your laptop. All you need is an internet connection and your passion for music! Provided the room is radio silent.'
     },
     {
-      question: 'Can I get feedback on my mixes and productions?',
-      answer: 'Absolutely! Our Pro and Superstar subscribers get access to monthly feedback sessions where our instructors review your work. You can also participate in our community forums for peer feedback.'
+      question: 'Who are the trainers?',
+      answer: 'Our trainers are experienced industry professionals who have played live gigs and worked in real-world DJ setups you\'ll learn directly from the pros.'
     },
     {
-      question: 'How long does it take to become a professional DJ?',
-      answer: 'Most students see significant progress in 3-6 months with consistent practice. Becoming a professional DJ varies greatly depending on your goals, practice time, and networking efforts. Our structured curriculum helps accelerate your learning journey.'
+      question: 'Do I need to travel to attend sessions?',
+      answer: 'No need to travel! Save on transport and expensive classroom fees put that money toward your future DJ gear instead.'
+    },
+    {
+      question: 'Are class timings flexible?',
+      answer: 'Yes. We offer flexible scheduling options based on your availability, so you can learn at your own pace without disrupting your routine.'
+    },
+    {
+      question: 'Is this course suitable for complete beginners?',
+      answer: 'Yes! Our course is designed for all levels whether you\'re just starting out or want to sharpen your skills, we\'ve got you covered.'
+    },
+    {
+      question: 'Will I get a certificate after completing the course?',
+      answer: 'Yes, we provide a certificate of completion that you can proudly showcase as part of your DJ portfolio.'
+    },
+    {
+      question: 'Can I record my sessions for future reference?',
+      answer: 'Yes, with trainer permission, you can record your sessions so you can revise and practice at your own convenience.'
+    },
+    {
+      question: 'Will I get help choosing or buying a DJ controller?',
+      answer: 'Absolutely. Our trainers will guide you on the best equipment to buy based on your budget and goals helping you make the right investment.'
     }
   ];
 
@@ -45,7 +65,7 @@ const FAQ = () => {
 
   return (
     <>
-      <style jsx>{`
+      <style>{`
         .faq-section { transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1); }
         .animate-header { opacity: 0; transform: translateY(-40px); transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 0.2s; }
         .animate-title { opacity: 0; transform: translateY(-30px); transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 0.4s; }
@@ -65,6 +85,11 @@ const FAQ = () => {
         .is-visible .faq-item:nth-child(3) { transition-delay: 1.0s; }
         .is-visible .faq-item:nth-child(4) { transition-delay: 1.1s; }
         .is-visible .faq-item:nth-child(5) { transition-delay: 1.2s; }
+        .is-visible .faq-item:nth-child(6) { transition-delay: 1.3s; }
+        .is-visible .faq-item:nth-child(7) { transition-delay: 1.4s; }
+        .is-visible .faq-item:nth-child(8) { transition-delay: 1.5s; }
+        .is-visible .faq-item:nth-child(9) { transition-delay: 1.6s; }
+        .is-visible .faq-item:nth-child(10) { transition-delay: 1.7s; }
         
         /* 3D Button Effect */
         .faq-btn-primary-compact {
@@ -146,14 +171,12 @@ const FAQ = () => {
                 </button>
 
                 {/* Animated Answer Container */}
-                <div 
-                  className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                    openFaq === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-                  }`}
+                <div
+                  className={`overflow-hidden transition-all duration-500 ease-in-out ${openFaq === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                    }`}
                 >
-                  <div className={`pb-8 transition-all duration-500 ease-in-out ${
-                    openFaq === index ? 'translate-y-0' : '-translate-y-4'
-                  }`}>
+                  <div className={`pb-8 transition-all duration-500 ease-in-out ${openFaq === index ? 'translate-y-0' : '-translate-y-4'
+                    }`}>
                     <p className="text-gray-300 leading-relaxed text-lg max-w-4xl">
                       {faq.answer}
                     </p>

@@ -4,7 +4,7 @@ import Hero from '../components/Hero';
 import Courses from '../components/Courses';
 import DiscoverAcademy from '../components/DiscoverAcademy';
 import Features from '../components/Features'; // Add this import
-import DJInstructors from '../components/DJInstructors';
+import SectionDivider from '../components/SectionDivider';
 import SuccessStories from '../components/SuccessStories';
 import Pricing from '../components/Pricing';
 import Bootcamp from '../components/Bootcamp';
@@ -52,22 +52,34 @@ const Home = () => {
 
       <Navbar activeSection={activeSection} scrollToSection={scrollToSection} />
       <Hero scrollToSection={scrollToSection} />
+
+      <SectionDivider />
       <Courses />
+
+      <SectionDivider />
       <div id="discover">
         <DiscoverAcademy />
       </div>
+
+      <SectionDivider />
       <div id="Features"> {/* Add section wrapper */}
         <Features />
       </div>
-      <div id="DJInstructors"> {/* Add section wrapper */}
-        <DJInstructors />
-      </div>
+
+      <SectionDivider />
       <div id="SuccessStories"> {/* Add section wrapper */}
         <SuccessStories />
       </div>
+
+      <SectionDivider />
       <Pricing />
+
+      <SectionDivider />
       <Bootcamp />
+
+      <SectionDivider />
       <FAQ />
+
       <Footer />
     </div>
   );

@@ -14,40 +14,48 @@ const Pricing = () => {
 
   const pricingPlans: PricingPlan[] = [
     {
-      name: 'Starter',
-      price: '$29',
-      period: '/month',
+      name: 'Book Your Live Demo Now',
+      price: '₹1,600',
+      period: ' + GST',
       features: [
-        'Access to basic lessons',
-        'Community forum access',
-        'Monthly newsletter',
-        'Course certificates'
+        '1-on-1 Live Demo with Pro DJs',
+        'Learn from Home – No need for a DJ console',
+        'Learn Using Your Laptop',
+        'Hands-On Experience',
+        'Test Before You Invest',
+        'Fast Assessment of Your Skills',
+        'Comfort & Convenience from Anywhere',
+        'Risk-Free Exploration'
       ]
     },
     {
-      name: 'Pro',
-      price: '$59',
-      period: '/month',
+      name: '1:5 & Group Sessions',
+      price: '₹35,000',
+      period: ' + GST',
       features: [
-        'All courses included',
-        'Weekly mentorship sessions',
-        'Exclusive masterclasses',
-        'Priority support',
-        'Downloadable resources'
+        'Small Group Learning (1:5 Ratio)',
+        '20 One-Hour Professional Sessions',
+        'Real-Time Guidance',
+        'Build Confidence Fast',
+        'Collaborative Environment',
+        'Structured Curriculum',
+        'Fixed Time & Learning Schedule'
+      ]
+    },
+    {
+      name: '30 One-Hour Pro DJing Course',
+      price: '₹70,000',
+      period: ' + GST',
+      features: [
+        '30 Live One-Hour Sessions',
+        '1-on-1 Personalized Coaching',
+        'Flexible Schedule – Learn anytime that suits you',
+        'Real-Time Feedback',
+        'Hands-On Practical Training',
+        'Build Confidence Quickly',
+        'Complimentary Bonus Pack (₹1.3 Lakh Value)'
       ],
       popular: true
-    },
-    {
-      name: 'Superstar',
-      price: '$129',
-      period: '/month',
-      features: [
-        'Everything in Pro',
-        '1-on-1 coaching sessions',
-        'DJ contest participation',
-        'Industry networking events',
-        'Career placement support'
-      ]
     }
   ];
 
@@ -62,7 +70,7 @@ const Pricing = () => {
 
   return (
     <>
-      <style jsx>{`
+      <style>{`
         .pricing-section { transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1); }
         .animate-header { opacity: 0; transform: translateY(-40px); transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 0.2s; }
         .animate-subtitle { opacity: 0; transform: translateY(-30px); transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 0.4s; }
@@ -200,11 +208,10 @@ const Pricing = () => {
             {pricingPlans.map((plan, index) => (
               <div
                 key={index}
-                className={`pricing-card card-hover relative bg-black/50 backdrop-blur-sm rounded-2xl p-8 border transition-all ${
-                  plan.popular
-                    ? 'popular-card'
-                    : 'border-orange-500/30'
-                }`}
+                className={`pricing-card card-hover relative bg-black/50 backdrop-blur-sm rounded-2xl p-8 border transition-all ${plan.popular
+                  ? 'popular-card'
+                  : 'border-orange-500/30'
+                  }`}
               >
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-1 bg-orange-500 text-white text-sm font-bold rounded-full">
@@ -231,7 +238,7 @@ const Pricing = () => {
                   <div className="button-container">
                     <button
                       className={
-                        plan.popular 
+                        plan.popular
                           ? "pricing-btn-primary-compact"
                           : "pricing-btn-secondary"
                       }

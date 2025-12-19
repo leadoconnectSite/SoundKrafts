@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { GraduationCap, Music, Video, Target, Users, Award } from 'lucide-react';
+import { Users, Zap, Monitor, Video, Calendar, BadgeCheck } from 'lucide-react';
 
 interface Feature {
   id: number;
@@ -15,39 +15,39 @@ const Features = () => {
   const features: Feature[] = [
     {
       id: 1,
-      title: "More than 600+ lessons",
-      description: "Learn from industry professionals and Tomorrowland artists through step by step in-depth courses for beginners and pros.",
-      icon: GraduationCap,
-    },
-    {
-      id: 2,
-      title: "The best online tools", 
-      description: "Download learning materials, guides, samples & project files to upgrade your learning experience.",
-      icon: Music,
-    },
-    {
-      id: 3,
-      title: "Schedule livestreams",
-      description: "Submit your demos or mixes and receive feedback from professionals during feedback and Q&A livestreams.",
-      icon: Video,
-    },
-    {
-      id: 4,
-      title: "Talent radar",
-      description: "Grab countless opportunities to get discovered. Join remix competitions, DJ contests and earn your spot on the talent radar.",
-      icon: Target,
-    },
-    {
-      id: 5,
-      title: "Join the community",
-      description: "Join students from all over the world in the Tomorrowland Academy WhatsApp community.",
+      title: "1-on-1 Private Coaching or 1:5 Mentor-to-Student Ratio",
+      description: "Choose between personalized one-on-one coaching or small group sessions with a 1:5 mentor-to-student ratio for focused guidance.",
       icon: Users,
     },
     {
+      id: 2,
+      title: "Fast-Track Your DJ Career",
+      description: "Learn the skills and techniques required to become club-ready and performance-ready quickly, accelerating your journey as a professional DJ.",
+      icon: Zap,
+    },
+    {
+      id: 3,
+      title: "Preparation & Performance in One Software",
+      description: "Practice, plan, and perform your sets using industry-standard software, combining preparation and live performance seamlessly.",
+      icon: Monitor,
+    },
+    {
+      id: 4,
+      title: "1-on-1 Live Sessions, Not Boring Recorded Videos",
+      description: "Experience interactive live sessions with mentors instead of pre-recorded videos, ensuring real-time feedback and engagement.",
+      icon: Video,
+    },
+    {
+      id: 5,
+      title: "Book 1-on-1 Live Demo Before You Commit",
+      description: "Try a free 1-on-1 live demo session to experience the teaching style and course structure before enrolling fully.",
+      icon: Calendar,
+    },
+    {
       id: 6,
-      title: "Tomorrowland",
-      description: "Supported and trusted by Tomorrowland.",
-      icon: Award,
+      title: "100% Money-Back Guarantee if You Do Not Learn DJing in 30 Hours",
+      description: "We are confident in our teaching if you don't master DJing in 30 hours, you get a full refund, no questions asked.",
+      icon: BadgeCheck,
     }
   ];
 
@@ -62,7 +62,7 @@ const Features = () => {
 
   return (
     <>
-      <style jsx>{`
+      <style>{`
         .features-section { transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1); }
         .animate-container { opacity: 0; transform: translateY(-40px); transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 0.2s; }
         .animate-header { opacity: 0; transform: translateY(-30px); transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 0.4s; }
@@ -136,7 +136,7 @@ const Features = () => {
             <div className="absolute top-0 left-0 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl"></div>
             <div className="absolute bottom-0 right-0 w-96 h-96 bg-orange-600/10 rounded-full blur-3xl"></div>
             <div className="absolute top-1/2 left-1/3 w-32 h-32 bg-orange-400/5 rounded-full blur-2xl"></div>
-            
+
             <div className="relative z-10">
               {/* Header Section */}
               <div className="animate-header flex justify-between items-start mb-8">

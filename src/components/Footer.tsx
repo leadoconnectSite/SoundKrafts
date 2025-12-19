@@ -26,7 +26,7 @@ const Footer = () => {
           <div className="flex items-center space-x-2">
             <Sparkles className="w-8 h-8 text-orange-500" />
             <span className="text-xl font-bold bg-gradient-to-r from-orange-500 to-orange-300 bg-clip-text text-transparent">
-              DJ Universe Academy
+              SoundKraft DJ Academy
             </span>
           </div>
 
@@ -46,7 +46,7 @@ const Footer = () => {
           </div>
 
           <p className="text-gray-500 text-sm">
-            © 2025 DJ Universe Academy. All rights reserved.
+            © 2025 SoundKraft DJ Academy. All rights reserved.
           </p>
         </div>
       </div>

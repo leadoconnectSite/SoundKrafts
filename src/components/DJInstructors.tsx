@@ -24,7 +24,7 @@ const DJInstructors = () => {
     },
     {
       id: 2,
-      name: "Afrojack", 
+      name: "Afrojack",
       lessons: 95,
       image: "https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg?auto=compress&cs=tinysrgb&w=800",
       specialty: "EDM & Progressive House"
@@ -47,7 +47,7 @@ const DJInstructors = () => {
       id: 5,
       name: "Martin Garrix",
       lessons: 42,
-      image: "https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&w=800",  
+      image: "https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&w=800",
       specialty: "Big Room House"
     },
     {
@@ -79,7 +79,7 @@ const DJInstructors = () => {
   const cardsPerSlide = getCardsPerSlide();
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % Math.ceil(djs.length / cardsPerSlide));
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + Math.ceil(djs.length / cardsPerSlide)) % Math.ceil(djs.length / cardsPerSlide));
-  
+
   const getVisibleDJs = () => {
     const startIndex = currentSlide * cardsPerSlide;
     return djs.slice(startIndex, startIndex + cardsPerSlide);
@@ -87,7 +87,7 @@ const DJInstructors = () => {
 
   return (
     <>
-      <style jsx>{`
+      <style>{`
         .dj-section { transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1); }
         .animate-header { opacity: 0; transform: translateY(-40px); transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 0.2s; }
         .animate-carousel { opacity: 0; transform: translateY(-30px); transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1); transition-delay: 0.4s; }
@@ -178,9 +178,9 @@ const DJInstructors = () => {
                         alt={dj.name}
                         className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500"
                       />
-                      
+
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-                      
+
                       <div className="absolute bottom-0 left-0 right-0 p-6">
                         <h3 className="text-2xl font-bold text-white mb-2 drop-shadow-lg">
                           {dj.name}
