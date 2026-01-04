@@ -21,6 +21,7 @@ const SignUp = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [pendingVerification, setPendingVerification] = useState(false);
     const [code, setCode] = useState('');
+    
 
     // Trigger entrance animation
     useEffect(() => {
