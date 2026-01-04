@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { SignedIn, SignedOut, UserButton } from '@clerk/clerk-react';
 import { Sparkles, Menu, X } from 'lucide-react';
 
 interface NavbarProps {
@@ -98,9 +100,21 @@ const Navbar = ({ activeSection, scrollToSection }: NavbarProps) => {
                   {item.label}
                 </button>
               ))}
-              <button className="text-gray-300 hover:text-orange-400 transition-colors">
-                Login
-              </button>
+              {/* Show Login link when signed out, UserButton when signed in */}
+              <SignedOut>
+                <Link to="/signin" className="text-gray-300 hover:text-orange-400 transition-colors">
+                  Login
+                </Link>
+              </SignedOut>
+              <SignedIn>
+                <UserButton
+                  appearance={{
+                    elements: {
+                      avatarBox: "w-10 h-10"
+                    }
+                  }}
+                />
+              </SignedIn>
               {/* Enhanced Get Started button with 3D effect */}
               <button
                 onClick={() => scrollToSection('pricing')}
@@ -133,9 +147,24 @@ const Navbar = ({ activeSection, scrollToSection }: NavbarProps) => {
                   {item.label}
                 </button>
               ))}
-              <button className="block w-full text-left text-gray-300 hover:text-orange-400 transition-colors">
-                Login
-              </button>
+              {/* Show Login link when signed out, UserButton when signed in */}
+              <SignedOut>
+                <Link to="/signin" className="block w-full text-left text-gray-300 hover:text-orange-400 transition-colors">
+                  Login
+                </Link>
+              </SignedOut>
+              <SignedIn>
+                <div className="flex items-center gap-3">
+                  <UserButton
+                    appearance={{
+                      elements: {
+                        avatarBox: "w-10 h-10"
+                      }
+                    }}
+                  />
+                  <span className="text-gray-300">My Account</span>
+                </div>
+              </SignedIn>
               {/* Enhanced mobile Get Started button */}
               <button
                 onClick={() => scrollToSection('pricing')}
